@@ -7,6 +7,12 @@ package apptoño;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -404,6 +410,7 @@ public class main extends javax.swing.JFrame {
             x = x - 0.2f;
             vzTextF.setText(""+resultado);
         }
+        new ChartTest().setVisible(true);
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void rbtnStateChange(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbtnStateChange
