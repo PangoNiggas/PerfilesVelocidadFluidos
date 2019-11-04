@@ -7,12 +7,6 @@ package apptoño;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -405,14 +399,54 @@ public class main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        if(opcComBox.getSelectedItem().toString().equals("Flujo de una pelicula descendente")){
-            float resultado = (Float.parseFloat(denTextF.getText()) * Float.parseFloat(gravTextF.getText()) * (float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180)) / Float.parseFloat(viscTextF.getText()) * ((Float.parseFloat(delKTextF.getText()) * x) - ((float)Math.pow(x, 2)/2));
-            x = x - 0.2f;
-            vzTextF.setText(""+resultado);
+        float [] xArr = new float[4];
+        float resultado;
+        
+        if(revisarBlancos()){
+            switch(opcComBox.getSelectedItem().toString()){
+                case "Flujo de una pelicula descendente":
+                    switch(opcCombBox1.getSelectedItem().toString()){
+                        case "Determinar el perfil de velocidad de la rampa":
+                            for(int i=0;i<xArr.length;i++){
+                                resultado = (Float.parseFloat(denTextF.getText()) * Float.parseFloat(gravTextF.getText()) * (float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180)) / Float.parseFloat(viscTextF.getText()) * ((Float.parseFloat(delKTextF.getText()) * x) - ((float)Math.pow(x, 2)/2));
+                                x = x - 0.2f;
+                                xArr[i] = resultado;
+                            }
+                            new ChartTest(xArr[0],xArr[1],xArr[2],xArr[3]).setVisible(true);
+                        break;
+                        case "Calcular la velocidad maxima":
+                            resultado = (Float.parseFloat(denTextF.getText()) * Float.parseFloat(gravTextF.getText()) *(float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180))/Float.parseFloat(viscTextF.getText());
+                            vzLabel.setText("Velocidad maxima: ");
+                            vzTextF.setText(""+resultado);
+                        break;
+                        case "Calcular <V>":
+                            resultado = (Float.parseFloat(denTextF.getText())*Float.parseFloat(gravTextF.getText())*(float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180)*(float)Math.pow(Float.parseFloat(delKTextF.getText()),2))/3*Float.parseFloat(viscTextF.getText());
+                            vzLabel.setText("Calculo de <V>: ");
+                            vzTextF.setText(""+resultado);
+                        break;
+                        case "Calcular el flujo molar":
+                            resultado = ((float)Math.pow(Float.parseFloat(denTextF.getText()),2)*Float.parseFloat(gravTextF.getText())*(float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180))/Float.parseFloat(viscTextF.getText());
+                            vzLabel.setText("Calculo de flujo molar: ");
+                            vzTextF.setText(""+resultado);
+                        break;
+                        case "Calcular el perfil de esfuerzo viscoso":
+                            String n = JOptionPane.showInputDialog(null,"Ingrese X");
+                            resultado = Float.parseFloat(denTextF.getText())*Float.parseFloat(gravTextF.getText())*(float)Math.cos(Double.parseDouble(angTextF.getText())*3.1416/180)*(Float.parseFloat(n)-Float.parseFloat(delKTextF.getText()));
+                            vzLabel.setText("Calculo el perfil de esfuerzo viscoso: ");
+                            vzTextF.setText(""+resultado);
+                        break;
+                    }
+                break;
+                case "Flujo a través de un tubo circular inclinado":
+                break;
+                case "Flujo tapón":
+                break;
+                case "Prototipo":
+                break;
+            }
         }
-        new ChartTest().setVisible(true);
     }//GEN-LAST:event_btnAceptarActionPerformed
-
+ 
     private void rbtnStateChange(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbtnStateChange
         if(rbtnEtanol.isSelected() && !rbtnAcetona.isSelected()){
             rbtnAcetona.setEnabled(false);
@@ -554,4 +588,12 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel wLabel;
     private javax.swing.JTextField wTextF;
     // End of variables declaration//GEN-END:variables
+public boolean revisarBlancos(){
+    if(angTextF.getText().isEmpty() || denTextF.getText().isEmpty() || pbsTextF.getText().isEmpty()  || pmodLTextF.getText().isEmpty() || pmodOTextF.getText().isEmpty() || radMayTextF.getText().isEmpty() || tempTextF.getText().isEmpty() || viscTextF.getText().isEmpty() || wTextF.getText().isEmpty()){
+        JOptionPane.showMessageDialog(null,"Llene TODOS los campos","ERROR",JOptionPane.ERROR_MESSAGE);
+        return false;
+    }else{
+        return true;
+    }
+}
 }
